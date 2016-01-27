@@ -1,0 +1,7 @@
+### Boltzmann Machine Ignore files
+# Project was written in intellij's Pycharm which means we must exclude its meta files
+.idea
+*.iml
+out
+gen
+# Created by .ignore support plugin (hsz.mobi)

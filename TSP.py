@@ -1,23 +1,27 @@
 
-'''
+"""
 Created on May 7, 2011
+Refactored for readability on January 27th, 2016
 @author: Michal Frystacky
-'''
+"""
 
-import os,random, math
+import math
+import os
+import random
+
 
 class BasicMatrix:
-
     def __init__(self):
         self.name = ""
         self.data = \
-            [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
+            [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
         for i in range(23):
             for j in range(23):
                 self.data[i].append(0)
+
     def __str__(self):
         format = "%3i, "
-        str = "%s\n" % ("The %s:" % self.name )
+        str = "%s\n" % ("The %s:" % self.name)
         str += '-' * 126
         str += "\n"
         str += " " * 8
@@ -28,32 +32,32 @@ class BasicMatrix:
         for row in self.data:
             str += "Row: %-2i [" % i
             i += 1
-            for j in range (len(row)):
+            for j in range(len(row)):
                 str += format % row[j]
             str += "]\n"
         return str
 
-class Matrix(BasicMatrix):
 
+class Matrix(BasicMatrix):
     def __init__(self, fileName):
         self.name = "Distance Matrix"
         self.data = \
-            [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
+            [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
         self.__location__ = os.path.realpath(os.path.join(os.getcwd(),
-        os.path.dirname(__file__)))
+                                                          os.path.dirname(__file__)))
         f = open(os.path.join(self.__location__, fileName))
         for i in range(23):
             for j in range(23):
                 temp = f.readline()
-                if (temp == ' '): #We do not add the EOL character
+                if (temp == ' '):  # We do not add the EOL character
                     pass
                 else:
                     self.data[i].append(int(temp))
 
-class ActivationMatrix(BasicMatrix):
 
+class ActivationMatrix(BasicMatrix):
     def init(self, b, p, t):
-        #BONUS PENALTY TEMPERATURE
+        # BONUS PENALTY TEMPERATURE
         self.bonus = b
         self.penalty = p
         self.temperature = t
@@ -66,7 +70,7 @@ class ActivationMatrix(BasicMatrix):
                 r = random.random()
             if (r < 0.6):
                 row[i] = 1
-            else :
+            else:
                 row[i] = 0
             i += 1
 
@@ -76,41 +80,42 @@ class ActivationMatrix(BasicMatrix):
     def calcDeltaC(self, row, column, matrix):
         activation = self.data[row][column]
         step = (1.0 - 2.0 * activation)
-        #sums the column before, the column after, the column we are in
+        # sums the column before, the column after, the column we are in
         #  and the row we are in
         sum = 0
         if (column == 0):
             for i in range(len(matrix.data)):
-                #sum += -1 * self.data[i][len(self.data[i]) - 1] * \
+                # sum += -1 * self.data[i][len(self.data[i]) - 1] * \
                 #    matrix.data[row][i]
                 sum += -1 * self.data[i][column + 1] * matrix.data[row][i]
         elif (column == (len(matrix.data) - 1)):
             for i in range(len(matrix.data)):
                 sum += -1 * self.data[i][column - 1] * matrix.data[row][i]
-                #sum += -1 * self.data[i][0] * matrix.data[row][i]
+                # sum += -1 * self.data[i][0] * matrix.data[row][i]
         else:
             for i in range(len(matrix.data)):
                 sum += -1 * self.data[i][column - 1] * matrix.data[row][i]
                 sum += -1 * self.data[i][column + 1] * matrix.data[row][i]
-            #calculate the same row and column
-        for i in range (len(matrix.data)):
-            if (i != row ):
+                # calculate the same row and column
+        for i in range(len(matrix.data)):
+            if (i != row):
                 sum += -1 * self.data[i][column] * self.penalty
             else:
                 pass
-            if (i != column ):
+            if (i != column):
                 sum += -1 * self.data[row][i] * self.penalty
             else:
                 pass
         step *= ((self.bonus * activation) + sum)
         return step
 
+
 def probAcceptance(self, deltaC):
-    return (1.0 / (1.0 + math.exp(-1.0 *\
-        (deltaC/float(self.temperature)))))
+    return (1.0 / (1.0 + math.exp(-1.0 * \
+                                  (deltaC / float(self.temperature)))))
+
 
 class MatrixPacket(BasicMatrix):
-
     def copyMatrix(self, activationMatrix):
         self.name = "Activation(p) Matrix"
         for i in range(len(activationMatrix.data)):
@@ -120,19 +125,19 @@ class MatrixPacket(BasicMatrix):
         self.distance = 0
         calcDis = 0
         for i in range(len(self.data)):
-            for j in range(len(self.data[i])): #iterate over every row
+            for j in range(len(self.data[i])):  # iterate over every row
                 if (j == len(self.data[i]) - 1) and (self.data[j][i] == 0):
                     self.patchIt(i)
                     self.distance = 10000000
-                    return False # we did not successfully calculate the distance
+                    return False  # we did not successfully calculate the distance
             if self.data[j][i] != 1:
                 continue
-            else :
+            else:
                 calcDis += 1
             if calcDis == 1:
                 temp1 = j
                 start = j
-            else :
+            else:
                 self.distance += disMatrix.data[temp1][j]
                 temp1 = j
                 calcDis = 1
@@ -149,15 +154,16 @@ class MatrixPacket(BasicMatrix):
                     self.data[i][column] = 1
                     return
 
+
 def findSD(locMatrix):
     actMatrix = ActivationMatrix()
     actMatrix.genRandomValues()
     actMatrix.init(1600, 1750, 550)
-    #print ("T",actMatrix.temperature, actMatrix)
-    #generate every posibility
+    # print ("T",actMatrix.temperature, actMatrix)
+    # generate every possibility
     # @todo: better explain what I am doing here
     positions = \
-        [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
+        [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
     while (actMatrix.temperature > 50):
         for rows in positions:
             for i in range(23):
@@ -165,38 +171,38 @@ def findSD(locMatrix):
         done = False
 
         while not done:
-            #find which random element in the matrix we are calculating
+            # find which random element in the matrix we are calculating
             while True:
                 row = random.randrange(0, len(positions))
-                #checks if this row is not empty
+                # checks if this row is not empty
                 if len(positions[row]) > 0:
                     break
-                #if it is we try again
+                    # if it is we try again
             # we know there is an element in this row
             element = random.randrange(0, len(positions[row]))
-            #we have to extract the number not the position due to the fact that we delete elements
+            # we have to extract the number not the position due to the fact that we delete elements
             column = positions[row][element]
-            #removes the appropriate element
-            if element + 1 >= len (positions[row]): #checks if element was the last column
+            # removes the appropriate element
+            if element + 1 >= len(positions[row]):  # checks if element was the last column
                 positions[row] = positions[row][:element]
             else:
-                positions[row] = positions[row][:element] + positions[row][element+1:]
+                positions[row] = positions[row][:element] + positions[row][element + 1:]
             deltaC = actMatrix.calcDeltaC(row, column, locMatrix)
             acceptance = actMatrix.probAcceptance(deltaC)
             r = random.random()
             if r < acceptance:
-                actMatrix.data[row][column] = 1 -actMatrix.data[row][column]
+                actMatrix.data[row][column] = 1 - actMatrix.data[row][column]
             else:
                 pass
-            #print ("deltaC: ",deltaC, " ", "acceptance: ", acceptance, " ", "r: ", r, "\n",actMatrix)
-            #print ("x & y coords: ", row, column)
-            #check if we iterated over the entire matrix
+            # print ("deltaC: ",deltaC, " ", "acceptance: ", acceptance, " ", "r: ", r, "\n",actMatrix)
+            # print ("x & y coords: ", row, column)
+            # check if we iterated over the entire matrix
             zeroRows = 0
             for i in range(len(positions)):
                 if len(positions[i]) > 0:
                     done = False
                     break
-            else :
+            else:
                 zeroRows += 1
             if zeroRows == len(positions):
                 done = True
@@ -209,17 +215,19 @@ def findSD(locMatrix):
         packet.calculateFinalDistance(locMatrix)
     return packet
 
+
 def main():
     fileName = "MatrixData"
     locMatrix = Matrix(fileName)
-    print (locMatrix)
+    print(locMatrix)
     random.seed(42)
     minPacket = findSD(locMatrix)
     for i in range(10000):
         tempPacket = findSD(locMatrix)
         if tempPacket.distance < minPacket.distance:
             minPacket = tempPacket
-    print (minPacket, minPacket.distance)
+    print(minPacket, minPacket.distance)
+
 
 if __name__ == '__main__':
     main()
