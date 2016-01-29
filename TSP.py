@@ -106,13 +106,13 @@ class ActivationMatrix(BasicMatrix):
         return step
 
 
-def probAcceptance(self, deltaC):
+def probability_acceptance(self, deltaC):
     return (1.0 / (1.0 + math.exp(-1.0 * \
                                   (deltaC / float(self.temperature)))))
 
 
 class MatrixPacket(BasicMatrix):
-    def copyMatrix(self, activationMatrix):
+    def copy_matrix(self, activationMatrix):
         self.name = "Activation(p) Matrix"
         for i in range(len(activationMatrix.data)):
             self.data[i] = activationMatrix.data[i][:]
@@ -205,21 +205,21 @@ def findSD(locMatrix):
         actMatrix.decay()
 
     packet = MatrixPacket()
-    packet.copyMatrix(actMatrix)
-    if (not packet.calculateFinalDistance(locMatrix)):
+    packet.copy_matrix(actMatrix)
+    if not packet.calculateFinalDistance(locMatrix):
         packet.calculateFinalDistance(locMatrix)
         packet.calculateFinalDistance(locMatrix)
     return packet
 
 
 def main():
-    fileName = "MatrixData"
-    locMatrix = Matrix(fileName)
-    print(locMatrix)
+    file_name = "MatrixData"
+    location_matrix = Matrix(file_name)
+    print(location_matrix)
     random.seed(42)
-    minPacket = findSD(locMatrix)
+    minPacket = findSD(location_matrix)
     for i in range(10000):
-        tempPacket = findSD(locMatrix)
+        tempPacket = findSD(location_matrix)
         if tempPacket.distance < minPacket.distance:
             minPacket = tempPacket
     print(minPacket, minPacket.distance)
