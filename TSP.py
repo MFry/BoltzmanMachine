@@ -1,23 +1,20 @@
-
+#!/usr/bin/env python
 """
 Created on May 7, 2011
 Refactored for readability on January 27th, 2016
-@author: Michal Frystacky
 """
-
 import math
 import os
 import random
+
+__author__ = "Michal Frystacky"
 
 
 class BasicMatrix:
     def __init__(self):
         self.name = ""
-        self.data = \
-            [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-        for i in range(23):
-            for j in range(23):
-                self.data[i].append(0)
+        self.data = [[0] * 23]*23
+        self.distance = 0
 
     def __str__(self):
         format = "%3i, "
@@ -41,15 +38,14 @@ class BasicMatrix:
 class Matrix(BasicMatrix):
     def __init__(self, fileName):
         self.name = "Distance Matrix"
-        self.data = \
-            [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+        self.data = [[]*23]
         self.__location__ = os.path.realpath(os.path.join(os.getcwd(),
                                                           os.path.dirname(__file__)))
         f = open(os.path.join(self.__location__, fileName))
         for i in range(23):
             for j in range(23):
                 temp = f.readline()
-                if (temp == ' '):  # We do not add the EOL character
+                if temp == ' ':  # We do not add the EOL character
                     pass
                 else:
                     self.data[i].append(int(temp))
@@ -122,7 +118,6 @@ class MatrixPacket(BasicMatrix):
             self.data[i] = activationMatrix.data[i][:]
 
     def calculateFinalDistance(self, disMatrix):
-        self.distance = 0
         calcDis = 0
         for i in range(len(self.data)):
             for j in range(len(self.data[i])):  # iterate over every row
@@ -138,6 +133,7 @@ class MatrixPacket(BasicMatrix):
                 temp1 = j
                 start = j
             else:
+                # @bug: At some this ran fine, but it seems that now there is bug in this part of the code
                 self.distance += disMatrix.data[temp1][j]
                 temp1 = j
                 calcDis = 1
