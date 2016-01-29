@@ -52,6 +52,7 @@ class Matrix(BasicMatrix):
 
 
 class ActivationMatrix(BasicMatrix):
+    # TODO: Refactor to properly use inheritance and class structure
     def init(self, b, p, t):
         # BONUS PENALTY TEMPERATURE
         self.bonus = b
@@ -59,7 +60,7 @@ class ActivationMatrix(BasicMatrix):
         self.temperature = t
         self.name = "Activation Matrix"
 
-    def genRandomValues(self):
+    def gen_random_values(self):
         for row in self.data:
             i = 0
             while i < len(row):
@@ -153,7 +154,7 @@ class MatrixPacket(BasicMatrix):
 
 def findSD(locMatrix):
     actMatrix = ActivationMatrix()
-    actMatrix.genRandomValues()
+    actMatrix.gen_random_values()
     actMatrix.init(1600, 1750, 550)
     # print ("T",actMatrix.temperature, actMatrix)
     # generate every possibility
