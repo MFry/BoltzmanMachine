@@ -53,7 +53,7 @@ class Matrix(BasicMatrix):
 
 class ActivationMatrix(BasicMatrix):
     # TODO: Refactor to properly use inheritance and class structure
-    def init(self, b, p, t):
+    def __init__(self, b, p, t):
         # BONUS PENALTY TEMPERATURE
         self.bonus = b
         self.penalty = p
@@ -65,14 +65,14 @@ class ActivationMatrix(BasicMatrix):
             i = 0
             while i < len(row):
                 r = random.random()
-            if (r < 0.6):
+            if r < 0.6:
                 row[i] = 1
             else:
                 row[i] = 0
             i += 1
 
     def decay(self):
-        self.temperature = self.temperature * 0.95
+        self.temperature *= 0.95
 
     def calcDeltaC(self, row, column, matrix):
         activation = self.data[row][column]
@@ -80,12 +80,12 @@ class ActivationMatrix(BasicMatrix):
         # sums the column before, the column after, the column we are in
         #  and the row we are in
         sum = 0
-        if (column == 0):
+        if column == 0:
             for i in range(len(matrix.data)):
                 # sum += -1 * self.data[i][len(self.data[i]) - 1] * \
                 #    matrix.data[row][i]
                 sum += -1 * self.data[i][column + 1] * matrix.data[row][i]
-        elif (column == (len(matrix.data) - 1)):
+        elif column == (len(matrix.data) - 1):
             for i in range(len(matrix.data)):
                 sum += -1 * self.data[i][column - 1] * matrix.data[row][i]
                 # sum += -1 * self.data[i][0] * matrix.data[row][i]
@@ -95,11 +95,11 @@ class ActivationMatrix(BasicMatrix):
                 sum += -1 * self.data[i][column + 1] * matrix.data[row][i]
                 # calculate the same row and column
         for i in range(len(matrix.data)):
-            if (i != row):
+            if i != row:
                 sum += -1 * self.data[i][column] * self.penalty
             else:
                 pass
-            if (i != column):
+            if i != column:
                 sum += -1 * self.data[row][i] * self.penalty
             else:
                 pass
@@ -108,7 +108,7 @@ class ActivationMatrix(BasicMatrix):
 
 
 def probability_acceptance(self, deltaC):
-    return (1.0 / (1.0 + math.exp(-1.0 * \
+    return (1.0 / (1.0 + math.exp(-1.0 *
                                   (deltaC / float(self.temperature)))))
 
 
