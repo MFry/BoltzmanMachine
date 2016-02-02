@@ -17,31 +17,31 @@ class BasicMatrix:
         self.distance = 0
 
     def __str__(self):
-        format = "%3i, "
-        str = "%s\n" % ("The %s:" % self.name)
-        str += '-' * 126
-        str += "\n"
-        str += " " * 8
+        format_str = "%3i, "
+        to_string = "%s\n" % ("The %s:" % self.name)
+        to_string += '-' * 126
+        to_string += "\n"
+        to_string += " " * 8
         for i in range(23):
-            str += "C:%-2i " % i
-        str += "\n"
+            to_string += "C:%-2i " % i
+        to_string += "\n"
         i = 0
         for row in self.data:
-            str += "Row: %-2i [" % i
+            to_string += "Row: %-2i [" % i
             i += 1
             for j in range(len(row)):
-                str += format % row[j]
-            str += "]\n"
-        return str
+                to_string += format_str % row[j]
+            to_string += "]\n"
+        return to_string
 
 
 class Matrix(BasicMatrix):
-    def __init__(self, fileName):
+    def __init__(self, file_name):
+        super().__init__()
         self.name = "Distance Matrix"
-        self.data = [[]*23]
         self.__location__ = os.path.realpath(os.path.join(os.getcwd(),
                                                           os.path.dirname(__file__)))
-        f = open(os.path.join(self.__location__, fileName))
+        f = open(os.path.join(self.__location__, file_name))
         for i in range(23):
             for j in range(23):
                 temp = f.readline()
@@ -55,6 +55,7 @@ class ActivationMatrix(BasicMatrix):
     # TODO: Refactor to properly use inheritance and class structure
     def __init__(self, b, p, t):
         # BONUS PENALTY TEMPERATURE
+        super().__init__()
         self.bonus = b
         self.penalty = p
         self.temperature = t
@@ -63,6 +64,7 @@ class ActivationMatrix(BasicMatrix):
     def gen_random_values(self):
         for row in self.data:
             i = 0
+            r = random.random()
             while i < len(row):
                 r = random.random()
             if r < 0.6:
@@ -153,15 +155,14 @@ class MatrixPacket(BasicMatrix):
 
 
 def findSD(locMatrix):
-    actMatrix = ActivationMatrix()
-    actMatrix.gen_random_values()
-    actMatrix.init(1600, 1750, 550)
+    act_matrix = ActivationMatrix(1600, 1750, 550)
+    act_matrix.gen_random_values()
     # print ("T",actMatrix.temperature, actMatrix)
     # generate every possibility
     # @todo: better explain what I am doing here
     positions = \
         [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
-    while (actMatrix.temperature > 50):
+    while act_matrix.temperature > 50:
         for rows in positions:
             for i in range(23):
                 rows.append(i)
@@ -184,11 +185,11 @@ def findSD(locMatrix):
                 positions[row] = positions[row][:element]
             else:
                 positions[row] = positions[row][:element] + positions[row][element + 1:]
-            deltaC = actMatrix.calcDeltaC(row, column, locMatrix)
-            acceptance = actMatrix.probAcceptance(deltaC)
+            deltaC = act_matrix.calcDeltaC(row, column, locMatrix)
+            acceptance = act_matrix.probAcceptance(deltaC)
             r = random.random()
             if r < acceptance:
-                actMatrix.data[row][column] = 1 - actMatrix.data[row][column]
+                act_matrix.data[row][column] = 1 - act_matrix.data[row][column]
             else:
                 pass
             # print ("deltaC: ",deltaC, " ", "acceptance: ", acceptance, " ", "r: ", r, "\n",actMatrix)
@@ -203,10 +204,10 @@ def findSD(locMatrix):
                 zeroRows += 1
             if zeroRows == len(positions):
                 done = True
-        actMatrix.decay()
+        act_matrix.decay()
 
     packet = MatrixPacket()
-    packet.copy_matrix(actMatrix)
+    packet.copy_matrix(act_matrix)
     if not packet.calculateFinalDistance(locMatrix):
         packet.calculateFinalDistance(locMatrix)
         packet.calculateFinalDistance(locMatrix)
